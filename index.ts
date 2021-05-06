@@ -6,7 +6,7 @@ function pad(s: number) {
   return s < 10 ? "0" + s : s;
 }
 
-const vaccineNotifier = async (pincode: string, chat_id) => {
+const vaccineNotifier = async (pincode: string, chat_id: string, aboveEighteenOnly: boolean = false) => {
   try {
     const dateObj = new Date();
     const today = [
@@ -39,7 +39,7 @@ const vaccineNotifier = async (pincode: string, chat_id) => {
 
     data?.centers?.forEach((center) => {
       center?.sessions?.forEach((session) => {
-        if (session.available_capacity > 0) {
+        if (session.available_capacity > 0 && (!aboveEighteenOnly || aboveEighteenOnly && session.min_age_limit <= 18)) {
           availableSlots.push({
             name: center.name,
             date: session.date,
@@ -74,6 +74,7 @@ const vaccineNotifier = async (pincode: string, chat_id) => {
 
 setInterval(() => {
   vaccineNotifier("342005", "746812110");
+  vaccineNotifier("301001", "1280739075", true);
 }, 5 * 60 * 1000)
 
 
