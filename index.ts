@@ -6,7 +6,11 @@ function pad(s: number) {
   return s < 10 ? "0" + s : s;
 }
 
-const vaccineNotifier = async (pincode: string, chat_id: string, aboveEighteenOnly: boolean = false) => {
+const vaccineNotifier = async (
+  pincode: string,
+  chats: string[],
+  aboveEighteenOnly: boolean = false
+) => {
   try {
     const dateObj = new Date();
     const today = [
@@ -39,7 +43,11 @@ const vaccineNotifier = async (pincode: string, chat_id: string, aboveEighteenOn
 
     data?.centers?.forEach((center) => {
       center?.sessions?.forEach((session) => {
-        if (session.available_capacity > 0 && (!aboveEighteenOnly || aboveEighteenOnly && session.min_age_limit <= 18)) {
+        if (
+          session.available_capacity > 0 &&
+          (!aboveEighteenOnly ||
+            (aboveEighteenOnly && session.min_age_limit <= 18))
+        ) {
           availableSlots.push({
             name: center.name,
             date: session.date,
@@ -56,13 +64,22 @@ const vaccineNotifier = async (pincode: string, chat_id: string, aboveEighteenOn
         (slot) =>
           `${slot.capacity} slots for ${slot.vaccine} available at ${slot.name} for ages greater than ${slot.ageLimit} on ${slot.date}`
       );
+      
       const availabilityText = `Vaccine slots available here - \n\n ${slots.join(
         "\n\n"
-      )}`;
+      )}
+      
+      Don't forget to thank Prateek ;)
+      `;
+
       console.log("Slots available");
-      await axios.post(
-        `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${chat_id}&text=${availabilityText}`
+      const promises = chats.map((chat_id) =>
+        axios.post(
+          `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${chat_id}&text=${availabilityText}`
+        )
       );
+      await Promise.all(promises);
+
       console.log("Message sent", pincode);
     } else {
       console.log("No slots found for", pincode);
@@ -73,8 +90,6 @@ const vaccineNotifier = async (pincode: string, chat_id: string, aboveEighteenOn
 };
 
 setInterval(() => {
-  vaccineNotifier("342005", "746812110");
-  vaccineNotifier("301001", "1280739075", true);
-}, 5 * 60 * 1000)
-
-
+  vaccineNotifier("342005", ["746812110"]);
+  vaccineNotifier("301001", ["1280739075", "954276961"], true);
+}, 5 * 60 * 1000);
