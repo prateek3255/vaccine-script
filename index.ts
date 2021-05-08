@@ -60,6 +60,7 @@ const vaccineNotifier = async (
     });
 
     if (availableSlots.length > 0) {
+      console.log(availableSlots);
       const slots = availableSlots.map(
         (slot) =>
           `${slot.capacity} slots for ${slot.vaccine} available at ${slot.name} for ages greater than ${slot.ageLimit} on ${slot.date}`
@@ -90,6 +91,10 @@ const vaccineNotifier = async (
 };
 
 setInterval(() => {
+  // Prateek
   vaccineNotifier("342005", ["746812110"]);
+  // Mansi
+  vaccineNotifier("307026", ["1485876940", "1122056957"]);
+  // Divyansh and Nupur
   vaccineNotifier("301001", ["1280739075", "954276961"], true);
-}, 5 * 60 * 1000);
+}, 2 * 60 * 1000);
