@@ -1,10 +1,50 @@
 const axios = require("axios");
-const puppeteer = require("puppeteer");
 const dotenv = require("dotenv").config();
 
 function pad(s: number) {
   return s < 10 ? "0" + s : s;
 }
+
+const data = [
+  {
+    pincode: "301001",
+    chats: [
+      {
+        name: "Divyansh",
+        id: "1280739075",
+      },
+      {
+        name: "Nupur",
+        id: "954276961",
+      },
+    ],
+    aboveEighteenOnly: true,
+  },
+  {
+    pincode: "307026",
+    chats: [
+      {
+        name: "Mansi",
+        id: "1485876940",
+      },
+      {
+        name: "Mansi 2",
+        id: "1122056957",
+      },
+    ],
+    aboveEighteenOnly: false,
+  },
+  {
+    pincode: "342005",
+    chats: [
+      {
+        name: "Prateek",
+        id: "746812110",
+      },
+    ],
+    aboveEighteenOnly: false,
+  },
+];
 
 const vaccineNotifier = async (
   pincode: string,
@@ -65,7 +105,7 @@ const vaccineNotifier = async (
         (slot) =>
           `${slot.capacity} slots for ${slot.vaccine} available at ${slot.name} for ages greater than ${slot.ageLimit} on ${slot.date}`
       );
-      
+
       const availabilityText = `Vaccine slots available here - \n\n ${slots.join(
         "\n\n"
       )}
@@ -91,10 +131,7 @@ const vaccineNotifier = async (
 };
 
 setInterval(() => {
-  // Prateek
-  vaccineNotifier("342005", ["746812110"]);
-  // Mansi
-  vaccineNotifier("307026", ["1485876940", "1122056957"]);
-  // Divyansh and Nupur
-  vaccineNotifier("301001", ["1280739075", "954276961"], true);
+  data.forEach(item => {
+    vaccineNotifier(item.pincode, item.chats.map(chat => chat.id), item.aboveEighteenOnly);
+  })
 }, 2 * 60 * 1000);
