@@ -130,6 +130,10 @@ const vaccineNotifier = async (
   }
 };
 
+data.forEach(item => {
+  vaccineNotifier(item.pincode, item.chats.map(chat => chat.id), item.aboveEighteenOnly);
+})
+
 setInterval(() => {
   data.forEach(item => {
     vaccineNotifier(item.pincode, item.chats.map(chat => chat.id), item.aboveEighteenOnly);
