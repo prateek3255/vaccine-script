@@ -42,7 +42,7 @@ const data = [
         id: "746812110",
       },
     ],
-    aboveEighteenOnly: false,
+    aboveEighteenOnly: true,
   },
 ];
 
@@ -84,7 +84,7 @@ const vaccineNotifier = async (
     data?.centers?.forEach((center) => {
       center?.sessions?.forEach((session) => {
         if (
-          session.available_capacity > 0 &&
+          session.available_capacity >= 1 &&
           (!aboveEighteenOnly ||
             (aboveEighteenOnly && session.min_age_limit <= 18))
         ) {
